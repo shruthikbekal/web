@@ -1267,35 +1267,34 @@
             profileUploadInput?.click();
         });
 
-        // View Mode Toggle
         const viewModeToggle = document.getElementById('viewModeToggle');
-        const viewModeStorageKey = 'drShruthiViewMode';
+        const viewModeStorageKey = 'drShruthiEditMode';
 
-        const updateViewModeUI = (isViewMode) => {
-            if (isViewMode) {
-                document.body.classList.add('view-mode');
-                viewModeToggle.textContent = '✏️ Switch to Edit Mode';
-                viewModeToggle.style.background = 'rgba(10, 102, 194, 0.12)';
-                viewModeToggle.style.borderColor = 'rgba(10, 102, 194, 0.3)';
-                viewModeToggle.style.color = '#0a66c2';
-            } else {
+        const updateViewModeUI = (isEditMode) => {
+            if (isEditMode) {
                 document.body.classList.remove('view-mode');
                 viewModeToggle.textContent = '🔒 Switch to View Mode';
                 viewModeToggle.style.background = 'rgba(27, 107, 86, 0.1)';
                 viewModeToggle.style.borderColor = 'rgba(27, 107, 86, 0.3)';
                 viewModeToggle.style.color = 'var(--primary)';
+                localStorage.setItem(viewModeStorageKey, 'true');
+            } else {
+                document.body.classList.add('view-mode');
+                viewModeToggle.textContent = '✏️ Switch to Edit Mode';
+                viewModeToggle.style.background = 'rgba(10, 102, 194, 0.12)';
+                viewModeToggle.style.borderColor = 'rgba(10, 102, 194, 0.3)';
+                viewModeToggle.style.color = '#0a66c2';
+                localStorage.setItem(viewModeStorageKey, 'false');
             }
-            localStorage.setItem(viewModeStorageKey, isViewMode ? 'true' : 'false');
         };
 
-        const savedViewMode = localStorage.getItem(viewModeStorageKey) === 'true';
-        if (savedViewMode) {
-            updateViewModeUI(true);
-        }
+        // Default to View Mode for visitors, but check if user previously set Edit Mode
+        const savedEditMode = localStorage.getItem(viewModeStorageKey) === 'true';
+        updateViewModeUI(savedEditMode);
 
         viewModeToggle?.addEventListener('click', () => {
-            const isCurrentlyViewMode = document.body.classList.contains('view-mode');
-            updateViewModeUI(!isCurrentlyViewMode);
+            const isCurrentlyEditMode = !document.body.classList.contains('view-mode');
+            updateViewModeUI(!isCurrentlyEditMode);
         });
 
         filterButtons.forEach((button) => {
