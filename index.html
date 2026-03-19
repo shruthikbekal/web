@@ -3,19 +3,1313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/styles.css">
     <title>Dr. Shruthi K Bekal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Source+Serif+4:wght@400;600&display=swap');
+
+        :root {
+            --bg: #f5f7f4;
+            --surface: #ffffff;
+            --ink: #1a2723;
+            --muted: #4d5c57;
+            --primary: #1b6b56;
+            --primary-soft: #d9efe7;
+            --accent: #a56417;
+            --accent-soft: #f7ead6;
+            --line: #d8dfda;
+            --hero-a: #e8f4ef;
+            --hero-b: #f9f4e8;
+            --shadow: 0 18px 40px rgba(16, 41, 34, 0.09);
+            --radius: 18px;
+            --max: 1140px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Sora", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 10% 20%, rgba(27, 107, 86, 0.08), transparent 30%),
+                radial-gradient(circle at 90% 0%, rgba(165, 100, 23, 0.08), transparent 27%),
+                var(--bg);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .shell {
+            width: min(100% - 2.4rem, var(--max));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(12px);
+            background: rgba(245, 247, 244, 0.86);
+            border-bottom: 1px solid rgba(216, 223, 218, 0.85);
+        }
+
+        .topbar-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.9rem 0;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 0.95rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        nav a {
+            color: var(--ink);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.35rem 0.5rem;
+            border-radius: 999px;
+            transition: background 0.2s ease;
+        }
+
+        nav a:hover {
+            background: #e8ece9;
+            text-decoration: none;
+        }
+
+        .hero {
+            padding: 4.4rem 0 3.4rem;
+        }
+
+        .hero-card {
+            border-radius: 24px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid rgba(27, 107, 86, 0.16);
+            box-shadow: var(--shadow);
+            animation: rise 700ms ease both;
+        }
+
+        .profile-header {
+            position: relative;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 1.2rem;
+            background: linear-gradient(115deg, #f9fcfb, #fff9ef);
+        }
+
+        .cover-photo {
+            height: clamp(180px, 30vw, 280px);
+            background:
+                linear-gradient(120deg, rgba(27, 107, 86, 0.3), rgba(165, 100, 23, 0.24)),
+                url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1800&q=80') center/cover;
+            position: relative;
+        }
+
+        .cover-edit {
+            position: absolute;
+            top: 0.9rem;
+            right: 0.9rem;
+        }
+
+        .cover-photo.dragging {
+            cursor: grab;
+            opacity: 0.98;
+        }
+
+        .icon-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .icon-overlay:hover {
+            background: rgba(0, 0, 0, 0.85);
+            transform: scale(1.1);
+        }
+
+        .icon-overlay::before {
+            content: '📷';
+        }
+
+        .profile-position-info {
+            position: absolute;
+            bottom: 0.6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .profile-avatar-large.dragging .profile-position-info {
+            opacity: 1;
+        }
+
+        .cover-photo.dragging::after {
+            content: 'Drag to reposition';
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .profile-identity {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            padding: 0 1.35rem;
+            margin-top: -58px;
+        }
+
+        .profile-avatar-large {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 18px rgba(7, 36, 28, 0.2);
+            background: linear-gradient(130deg, #d5ebe3, #f6e7cd);
+            display: grid;
+            place-items: center;
+            color: #124c3d;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 0.06em;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            flex: 0 0 auto;
+            cursor: grab;
+        }
+
+        .profile-avatar-large.has-image {
+            cursor: grab;
+        }
+
+        .profile-avatar-large.dragging {
+            cursor: grabbing;
+            opacity: 0.95;
+        }
+
+        .profile-avatar-large.has-image {
+            color: transparent;
+        }
+
+        .profile-avatar-large.has-image .icon-overlay {
+            display: flex;
+        }
+
+        .avatar-container {
+            position: relative;
+        }
+
+        .identity-copy {
+            padding-bottom: 0.2rem;
+        }
+
+        .hero-main {
+            padding: 1.2rem 1.35rem 1.4rem;
+        }
+
+        .tagline {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(27, 107, 86, 0.24);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--primary);
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-family: "Source Serif 4", "Georgia", serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 0.7rem;
+        }
+
+        .hero .sub {
+            font-size: 1.02rem;
+            color: var(--muted);
+            max-width: 62ch;
+            margin-bottom: 1rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-note {
+            margin-top: 0.5rem;
+            color: var(--muted);
+            font-size: 0.76rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            padding: 0.72rem 1.08rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid transparent;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #f6fbf9;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--ink);
+            border-color: rgba(26, 39, 35, 0.2);
+        }
+
+        .btn-linkedin {
+            background: #0a66c2;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 0.58rem 0.86rem;
+            font-size: 0.8rem;
+        }
+
+        .stat-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            margin-top: 0.8rem;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(26, 39, 35, 0.12);
+            border-radius: 14px;
+            padding: 0.85rem;
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 1.45rem;
+            color: var(--primary);
+        }
+
+        .metric span {
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        section {
+            padding: 1.3rem 0 2.3rem;
+        }
+
+        .section-head {
+            margin-bottom: 1.1rem;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.4rem, 2.4vw, 2rem);
+            margin-bottom: 0.3rem;
+        }
+
+        .section-head p {
+            max-width: 75ch;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: 0 6px 24px rgba(11, 38, 29, 0.05);
+            padding: 1.1rem 1.15rem;
+        }
+
+        .summary {
+            grid-column: span 8;
+        }
+
+        .skills {
+            grid-column: span 4;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin-top: 0.7rem;
+        }
+
+        .chip {
+            background: var(--primary-soft);
+            color: #114c3d;
+            font-weight: 600;
+            font-size: 0.82rem;
+            padding: 0.32rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid rgba(17, 76, 61, 0.2);
+        }
+
+        .timeline {
+            display: grid;
+            gap: 0.95rem;
+        }
+
+        .item {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-left: 5px solid var(--primary);
+            border-radius: 14px;
+            padding: 1rem 1rem 0.9rem;
+        }
+
+        .item h3 {
+            font-size: 1.02rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-bottom: 0.45rem;
+        }
+
+        ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.1rem;
+        }
+
+        li {
+            margin-bottom: 0.35rem;
+        }
+
+        .two-col {
+            columns: 2;
+            column-gap: 1.4rem;
+            margin-top: 0.8rem;
+        }
+
+        .two-col li {
+            break-inside: avoid;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .filter {
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.82rem;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .filter.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .pub-list {
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .pub {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            padding: 0.8rem;
+        }
+
+        .pub .label {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.45rem;
+            border-radius: 999px;
+            margin-bottom: 0.35rem;
+            background: var(--accent-soft);
+            color: #7f4a0f;
+        }
+
+        details {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            padding: 0.8rem 0.95rem;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        details > ul {
+            margin-top: 0.7rem;
+        }
+
+        .achievements {
+            background: linear-gradient(180deg, #f8f5ee, #fff);
+            border-color: #ebdfc8;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .video-wrap {
+            position: relative;
+            padding-top: 56.25%;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 22px rgba(8, 36, 29, 0.08);
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .edit-only {
+            display: inline-block;
+        }
+
+        .view-mode .edit-only {
+            display: none !important;
+        }
+
+        .view-badge {
+            display: none;
+            background: rgba(10, 102, 194, 0.12);
+            color: #0a66c2;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.28rem 0.5rem;
+            border-radius: 999px;
+            margin-left: 0.4rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .view-mode .view-badge {
+            display: inline-block;
+        }
+
+        #viewModeToggle {
+            margin-left: auto;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+            background: rgba(27, 107, 86, 0.1);
+            border: 1px solid rgba(27, 107, 86, 0.3);
+            color: var(--primary);
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        #viewModeToggle:hover {
+            background: rgba(27, 107, 86, 0.18);
+            border-color: var(--primary);
+        }
+
+        #viewModeToggle:active {
+            transform: scale(0.98);
+        }
+
+        footer {
+            padding: 1rem 0 2.7rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: rise 600ms ease forwards;
+        }
+
+        .reveal:nth-child(2) {
+            animation-delay: 120ms;
+        }
+
+        .reveal:nth-child(3) {
+            animation-delay: 200ms;
+        }
+
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 960px) {
+            .profile-identity {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-top: -48px;
+            }
+
+            .profile-avatar-large {
+                width: 118px;
+                height: 118px;
+            }
+
+            .summary,
+            .skills {
+                grid-column: span 12;
+            }
+
+            .two-col {
+                columns: 1;
+            }
+
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .shell {
+                width: min(100% - 1.4rem, var(--max));
+            }
+
+            .hero-main {
+                padding: 1.1rem;
+            }
+
+            .profile-identity {
+                padding: 0 1.1rem;
+            }
+
+            nav {
+                display: none;
+            }
+
+            section {
+                padding: 0.9rem 0 1.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Dr. Shruthi K Bekal's Academic Profile</h1>
+    <header class="topbar">
+        <div class="shell topbar-wrap">
+            <div class="brand">Dr. Shruthi K Bekal <span class="view-badge">VIEW MODE</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#experience">Experience</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#research">Research</a></li>
+                    <li><a href="#media">Media</a></li>
+                    <li><a href="#development">FDP & Certifications</a></li>
+                    <li><a href="#achievements">Achievements</a></li>
+                </ul>
+            </nav>
+            <button id="viewModeToggle">🔒 Switch to View Mode</button>
+        </div>
     </header>
+
     <main>
-        <section>
-            <h2>About Me</h2>
-            <p>[Your bio goes here.]</p>
-            <img src="assets/headshot.png" alt="Dr. Shruthi K Bekal's Headshot">
+        <section class="hero">
+            <div class="shell">
+                <div class="hero-card">
+                    <div class="profile-header">
+                        <div class="cover-photo" id="coverPhoto" aria-label="Profile cover image">
+                            <button class="btn btn-secondary btn-sm cover-edit edit-only" type="button" id="coverUploadTrigger" aria-label="Edit cover photo">📝 Change Cover</button>
+                            <input id="coverUploadInput" type="file" accept="image/*" hidden>
+                        </div>
+                        <div class="profile-identity">
+                            <div class="avatar-container">
+                                <div class="profile-avatar-large" id="avatarWrap" aria-label="Profile photo placeholder">
+                                    <span id="avatarInitials">SB</span>
+                                    <button class="icon-overlay edit-only" type="button" id="profileCameraBtn" aria-label="Edit profile photo"></button>
+                                    <div class="profile-position-info">Drag to adjust</div>
+                                </div>
+                            </div>
+                            <div class="identity-copy">
+                                <div class="tagline">Assistant Professor - Management</div>
+                                <h1>Dr. Shruthi K Bekal</h1>
+                                <p class="sub">MBA, NET, MPhil, Ph.D. | Self-motivated academician with 10+ years of teaching in Marketing Management and Analytics, and 3 years in HR consulting and employee engagement.</p>
+                                <div class="hero-actions">
+                                    <a class="btn btn-primary btn-sm" href="#experience">View Experience</a>
+                                    <a class="btn btn-secondary btn-sm" href="#research">Research & Publications</a>
+                                    <a class="btn btn-linkedin btn-sm" href="https://www.linkedin.com/in/dr-shruthi-bekal-6ab67a38/" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a>
+                                    <label class="btn btn-linkedin btn-sm edit-only" for="profileUploadInput">Upload Profile Photo</label>
+                                    <button class="btn btn-secondary btn-sm edit-only" type="button" id="resetProfileBtn">Reset Profile Photo</button>
+                                    <button class="btn btn-secondary btn-sm edit-only" type="button" id="resetCoverBtn">Reset Cover</button>
+                                    <input id="profileUploadInput" type="file" accept="image/*" hidden>
+                                </div>
+                                <p class="hero-note edit-only">One profile picture and one background picture, editable anytime and saved in this browser.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-main">
+                        <div class="stat-strip">
+                            <div class="metric">
+                                <strong>10+ Years</strong>
+                                <span>Academic experience</span>
+                            </div>
+                            <div class="metric">
+                                <strong>3 Years</strong>
+                                <span>Industry HR experience</span>
+                            </div>
+                            <div class="metric">
+                                <strong>2026</strong>
+                                <span>Advanced Data Analytics (IIM Kozhikode)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Professional Summary</h2>
+                    <p>Academic leader focused on industry-aligned curriculum design, research mentoring, and data-driven pedagogy. Skilled in bridging management education with analytics tools to help students build curiosity and practical decision-making capability.</p>
+                </div>
+                <div class="grid">
+                    <article class="card summary reveal">
+                        <h3>Teaching & Leadership Focus</h3>
+                        <ul>
+                            <li>Designing comprehensive, industry-relevant curricula for Marketing and Analytics programs.</li>
+                            <li>Implementing innovative instructional methods and career-enhancement initiatives.</li>
+                            <li>Guiding student research projects and mentoring academic progression.</li>
+                            <li>Proctoring examinations and evaluating academic performance with rigor and fairness.</li>
+                            <li>Program coordination for BBA (Digital Business), and previously BBA (Hon.).</li>
+                        </ul>
+                    </article>
+                    <aside class="card skills reveal">
+                        <h3>Software Proficiency</h3>
+                        <div class="chips">
+                            <span class="chip">Advanced MS Excel</span>
+                            <span class="chip">Tableau</span>
+                            <span class="chip">Microsoft Power BI</span>
+                            <span class="chip">JMP</span>
+                        </div>
+                        <h3 style="margin-top:1rem;">Core Subjects Taught</h3>
+                        <ul>
+                            <li>Data Analytics</li>
+                            <li>Business Intelligence</li>
+                            <li>Marketing Management</li>
+                            <li>Brand & Service Marketing</li>
+                            <li>Consumer Behaviour</li>
+                            <li>Retail Marketing</li>
+                        </ul>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Experience</h2>
+                    <p>Teaching, coordination, and administrative contributions across higher education and corporate HR settings.</p>
+                </div>
+                <div class="timeline">
+                    <article class="item reveal">
+                        <h3>Assistant Professor & Program Coordinator, BBA</h3>
+                        <p class="meta">Center for Management Studies, Jain University, Bangalore | June 2015 - Present</p>
+                        <ul>
+                            <li>Delivering Marketing and Data Analytics specialization courses for BBA students.</li>
+                            <li>Creating and executing career enhancement activities and department-level initiatives.</li>
+                            <li>Program Coordinator for BBA (Digital Business) from 2025 onwards.</li>
+                            <li>Program Coordinator for BBA (Hon.) from 2021 to 2024.</li>
+                            <li>Committee service: NAAC (2015-16; 2025-present), Exam (2016-19), Timetable (2019-21).</li>
+                        </ul>
+                    </article>
+                    <article class="item reveal">
+                        <h3>Visiting Faculty, MBA</h3>
+                        <p class="meta">St Joseph's Pondicherry University Twinning Program, Bangalore | Aug 2019 - Sep 2023</p>
+                        <ul>
+                            <li>Delivered lectures for postgraduate management students.</li>
+                            <li>Guided and mentored research projects.</li>
+                            <li>Taught Management Concepts and Organizational Behaviour, and Human Resource Management.</li>
+                        </ul>
+                    </article>
+                    <article class="item reveal">
+                        <h3>HR Specialist - Employee Engagement</h3>
+                        <p class="meta">Altisource Business Solutions Pvt. Ltd., Bangalore | Nov 2013 - Jun 2014</p>
+                        <ul>
+                            <li>Managed induction and orientation programs for new employees.</li>
+                            <li>Achieved 98% success in employee pull-through and 100% participation in engagement activities.</li>
+                            <li>Contributed to a 50% reduction in employee turnover.</li>
+                        </ul>
+                    </article>
+                    <article class="item reveal">
+                        <h3>Consultant</h3>
+                        <p class="meta">Comviva Technologies Limited, Bangalore | Sep 2011 - Sep 2013</p>
+                        <ul>
+                            <li>Led employee engagement initiatives and grievance handling across business units.</li>
+                            <li>Maintained above 90% compliance for engagement programs.</li>
+                            <li>Delivered 100% query resolution within SLA and ensured annual HR process compliance.</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="education">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Educational Credentials</h2>
+                    <p>Strong academic foundation in management, branding research, and analytics-oriented professional development.</p>
+                </div>
+                <div class="timeline">
+                    <article class="item reveal">
+                        <h3>Advanced Data Analytics (Professional Certificate Programme)</h3>
+                        <p class="meta">IIM Kozhikode | Jun 2025 - Apr 2026</p>
+                    </article>
+                    <article class="item reveal">
+                        <h3>Doctor of Philosophy (Ph.D.) - Management</h3>
+                        <p class="meta">Jain University | Jan 2017 - Aug 2021</p>
+                        <p>A study on prospective employees' perception towards employer brand attractiveness in the IT industry.</p>
+                    </article>
+                    <article class="item reveal">
+                        <h3>Master of Philosophy (MPhil) - Management</h3>
+                        <p class="meta">Jain University | Aug 2015 - Dec 2016</p>
+                        <p>Explored fairness and equity perceptions among contractual employees, with implications for employer branding and internal marketing.</p>
+                    </article>
+                    <article class="item reveal">
+                        <h3>MBA - HR & Marketing</h3>
+                        <p class="meta">Alliance Business Academy, Bangalore University | Jul 2009 - Jun 2011</p>
+                    </article>
+                    <article class="item reveal">
+                        <h3>BBM - Marketing</h3>
+                        <p class="meta">Sindhi College, Bangalore University | Jun 2006 - Apr 2009</p>
+                    </article>
+                    <article class="item reveal">
+                        <h3>UGC NET Qualified</h3>
+                        <p class="meta">Jul 2016</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="research">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Publications, Patents & Presentations</h2>
+                    <p>Selected academic outputs across books, chapters, conferences, and journal publications.</p>
+                </div>
+                <div class="filter-row">
+                    <button class="filter active" data-filter="all">All</button>
+                    <button class="filter" data-filter="chapter">Chapters</button>
+                    <button class="filter" data-filter="book">Books</button>
+                    <button class="filter" data-filter="patent">Patent</button>
+                    <button class="filter" data-filter="paper">Papers</button>
+                </div>
+                <div class="pub-list" id="pubList">
+                    <article class="pub" data-kind="chapter">
+                        <span class="label">Chapter</span>
+                        <p>Bekal, S., Wilkinson, M., & Sait, D. A. (2025). Social media marketing in high-street fashion brands. In Applied research for growth, innovation and sustainable impact (Routledge).</p>
+                    </article>
+                    <article class="pub" data-kind="chapter">
+                        <span class="label">Chapter</span>
+                        <p>Asha, S., Accamma, C. G., Venkteshwar, A., Bekal, S., & Maney, K. (2024). Enhancing human potential: The intersection of transhumanism, genomics, and workplace wellness programs. IGI Global.</p>
+                    </article>
+                    <article class="pub" data-kind="book">
+                        <span class="label">Book</span>
+                        <p>Gangwar, N & Bekal, S. (2021). Business Management (Principles, Processes and Practices). Notion Press. ISBN: 9781639973415.</p>
+                    </article>
+                    <article class="pub" data-kind="patent">
+                        <span class="label">Patent</span>
+                        <p>Co-inventor, Impact of Ethical Beliefs on Green Consumer Behaviour. Indian Patent Application No. 202411073862, published 27 Jun 2025 (Awaiting Request for Examination).</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Bekal, S. (2025). A global perspective on the interconnectedness of humanitarian crises. Journal Publication of International Research for Engineering & Management, 5(3), 1-5.</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Chakraborty, C., Shrivastava, H., Bekal, S. (2024). Facilitating access to banking services with ATM networks. ICCCNT 2024, IEEE.</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Accamma, C. G., Xavier, S., Bekal, S., & Asha, S. (2024). Impact of micro social media influencers on consumer behavior and brand engagement. MSJ, 13(8).</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Bekal et al. (2022). Role of Psychological Capital on Job Performance and Job Effectiveness of Remote Workers amidst COVID-19. World Journal of Management and Economics (ABDC Category C).</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Bekal, S., & Warrier, U. (2021). Impact of employer branding on employee retention. International Journal of Management, Technology and Engineering, 6(3), 22-34.</p>
+                    </article>
+                    <article class="pub" data-kind="paper">
+                        <span class="label">Paper</span>
+                        <p>Bekal, S. (2019). Impact of social media on Indian politics. Journal of the Gujarat Research Society, 21(11), 1302-1305.</p>
+                    </article>
+                </div>
+
+                <details style="margin-top:1rem;">
+                    <summary>View conference presentations (2015-2026)</summary>
+                    <ul class="two-col">
+                        <li>2026: Designing circular-digital business models for organizational resilience (ICSIB 2026, JAIN University).</li>
+                        <li>2025: Social Media Marketing in High-Street Fashion Brands (Industry 5.0 Conference).</li>
+                        <li>2023: Effect of prospective employees' gender on perception of employer branding.</li>
+                        <li>2022: Satisfaction During COVID-19 Outbreak: Indian Emergency Services (Banking Sector).</li>
+                        <li>2021: Prospective Employees' Perception towards attractiveness of employer brand (Doctoral Consortium).</li>
+                        <li>2021: Effect of prospective employees and gender on perception of employer branding.</li>
+                        <li>2020: Employer branding in IT industry (Research Retreat 2020).</li>
+                        <li>2019: Employer branding in IT industry (Research Retreat).</li>
+                        <li>2016: Graduate recruitment methods: effectiveness and efficiency.</li>
+                        <li>2016: Leadership skills, emotional intelligence and personality of working women in India.</li>
+                        <li>2015: Perceived equity of contractual employees and productivity.</li>
+                    </ul>
+                </details>
+            </div>
+        </section>
+
+        <section id="development">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>FDPs, Webinars & Certifications</h2>
+                    <p>Continuous professional development across education technology, analytics, AI, pedagogy, and management practice.</p>
+                </div>
+                <div class="grid">
+                    <article class="card" style="grid-column:span 7;">
+                        <h3>Faculty Development and Conference Participation</h3>
+                        <ul>
+                            <li>2026: Organizing committee member, International Conference on Sustainable Innovation in Business (ICSIB 2026).</li>
+                            <li>2025: FDPs at Mizoram University, AICTE ATAL, IIMB, and Jain University on digital pedagogy, quantum computing, AI, IoT, and cybersecurity.</li>
+                            <li>2024: Analytics stack FDP (Power BI, Tableau, Excel, Shiny), plus MIT/HBR webinars on AI and workforce transformation.</li>
+                            <li>2023: AI in higher education and GenAI-enabled case-based teaching webinars.</li>
+                            <li>2022-2015: Sustained participation in entrepreneurship summits, research ethics dialogues, marketing strategy programs, and national seminars.</li>
+                        </ul>
+                        <details style="margin-top:0.85rem;">
+                            <summary>Expand for year-wise highlights (2015-2026)</summary>
+                            <ul class="two-col">
+                                <li>2026: ICSIB 2026 organizing committee.</li>
+                                <li>2025: Teacher education FDP, quantum computing FDP, Gurunnathi upgradation, IIMBx digital future FDP, AI/IoT/cybersecurity FDP.</li>
+                                <li>2024: Four-in-one Analytics Stack FDP, HBR AI customer service webinar, MIT Sloan AI/workforce sessions.</li>
+                                <li>2023: AI in reshaping higher education and ChatGPT-focused teaching webinars.</li>
+                                <li>2022: NEP and academic accountability dialogue, International Entrepreneurship Summit keynotes.</li>
+                                <li>2021: Research summit, HR seminar, and multiple faculty development initiatives.</li>
+                                <li>2020: National and international events on COVID-era management and marketing.</li>
+                                <li>2019: Mental wellbeing FDP, SEBI financial education workshop, MIT webinars.</li>
+                                <li>2018: HR conclave, data analysis FDP, CELT program, machine learning customer experience webinar.</li>
+                                <li>2017: Technology innovation and visualization webinars.</li>
+                                <li>2016: Counselling sensitization, research skills, marketing strategy and experiential learning programs.</li>
+                                <li>2015: Counselling and industry-institution interface seminar; data management webinar.</li>
+                            </ul>
+                        </details>
+                    </article>
+                    <article class="card" style="grid-column:span 5;">
+                        <h3>Certification Courses Completed</h3>
+                        <ul>
+                            <li>Launch Your Business Online, SUNY via Coursera (2025).</li>
+                            <li>Project Management Basics, Starbucks Global Academy & ASU (2025).</li>
+                            <li>Business Law for Managers, LinkedIn Learning (2023).</li>
+                            <li>Statistical Discovery using JMP (2022).</li>
+                            <li>Excel and team-management leadership certifications (2021).</li>
+                            <li>International Marketing, Marketing Mix, and Neuromarketing, Coursera (2020).</li>
+                            <li>MS Excel and Advanced Excel certification (2016).</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="media">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Media Feature</h2>
+                    <p>Featured collaboration on Sangam, an initiative associated with IIM Bangalore.</p>
+                </div>
+                <div class="media-grid">
+                    <article class="card reveal">
+                        <h3>Bringing AI to Life in the Classroom</h3>
+                        <p style="margin-top:0.6rem; color:var(--muted);">Dr. Shruthi Bekal collaborated on this featured educational video focused on practical AI integration in teaching and classroom design.</p>
+                        <p style="margin-top:0.8rem;">
+                            <a href="https://www.youtube.com/watch?v=Ql111QMriC4" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+                        </p>
+                    </article>
+                    <article class="card reveal">
+                        <div class="video-wrap" aria-label="Bringing AI to Life in the Classroom video embed">
+                            <iframe
+                                src="https://www.youtube.com/embed/Ql111QMriC4"
+                                title="Bringing AI to Life in the Classroom"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievements">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <h2>Achievements</h2>
+                    <p>Recognitions for teaching excellence, presentation quality, and academic contributions.</p>
+                </div>
+                <article class="card achievements">
+                    <ul class="two-col">
+                        <li>Recognized for mastery in articulation, contextualization, and stage presence (Jain University, Jan 2024).</li>
+                        <li>Awarded Distinction in 5-day FDP "How far can we go" (Jain University, Jun 2021).</li>
+                        <li>Awarded Best Presentation in Management (Research Retreat, 2020).</li>
+                        <li>Recognized for creating Excel-based software to systematize timetable management (2019).</li>
+                        <li>Awarded for contribution towards research publication (Dec 2015-Nov 2016).</li>
+                        <li>Awarded for diligence in performance appraisal support (2012).</li>
+                    </ul>
+                </article>
+            </div>
         </section>
     </main>
+
+    <footer>
+        <div class="shell">Dr. Shruthi K Bekal | Assistant Professor, Management | Academic Portfolio</div>
+    </footer>
+
+    <script>
+        const filterButtons = document.querySelectorAll('.filter');
+        const publications = document.querySelectorAll('.pub');
+        const uploadInput = document.getElementById('profileUploadInput');
+        const coverUploadInput = document.getElementById('coverUploadInput');
+        const coverUploadTrigger = document.getElementById('coverUploadTrigger');
+        const avatarWrap = document.getElementById('avatarWrap');
+        const coverPhoto = document.getElementById('coverPhoto');
+        const avatarInitials = document.getElementById('avatarInitials');
+        const resetProfileBtn = document.getElementById('resetProfileBtn');
+        const resetCoverBtn = document.getElementById('resetCoverBtn');
+        const profileStorageKey = 'drShruthiProfileImage';
+        const coverStorageKey = 'drShruthiCoverImage';
+
+        const applyProfileImage = (imageDataUrl) => {
+            avatarWrap.style.backgroundImage = `url('${imageDataUrl}')`;
+            avatarWrap.classList.add('has-image');
+            avatarInitials.textContent = '';
+        };
+
+        const applyCoverImage = (imageDataUrl) => {
+            coverPhoto.style.backgroundImage = `linear-gradient(120deg, rgba(27, 107, 86, 0.3), rgba(165, 100, 23, 0.24)), url('${imageDataUrl}')`;
+        };
+
+        const clearProfileImage = () => {
+            avatarWrap.style.backgroundImage = '';
+            avatarWrap.classList.remove('has-image');
+            avatarInitials.textContent = 'SB';
+            localStorage.removeItem(profileStorageKey);
+        };
+
+        const clearCoverImage = () => {
+            coverPhoto.style.backgroundImage = '';
+            localStorage.removeItem(coverStorageKey);
+        };
+
+        const storedProfileImage = localStorage.getItem(profileStorageKey);
+        if (storedProfileImage) {
+            applyProfileImage(storedProfileImage);
+        }
+
+        const storedCoverImage = localStorage.getItem(coverStorageKey);
+        if (storedCoverImage) {
+            applyCoverImage(storedCoverImage);
+        }
+
+        uploadInput?.addEventListener('change', (event) => {
+            const file = event.target.files?.[0];
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const imageDataUrl = String(reader.result || '');
+                if (!imageDataUrl) {
+                    return;
+                }
+
+                applyProfileImage(imageDataUrl);
+                localStorage.setItem(profileStorageKey, imageDataUrl);
+            };
+
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        });
+
+        coverUploadTrigger?.addEventListener('click', () => {
+            coverUploadInput?.click();
+        });
+
+        coverUploadInput?.addEventListener('change', (event) => {
+            const file = event.target.files?.[0];
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const imageDataUrl = String(reader.result || '');
+                if (!imageDataUrl) {
+                    return;
+                }
+
+                applyCoverImage(imageDataUrl);
+                localStorage.setItem(coverStorageKey, imageDataUrl);
+            };
+
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        });
+
+        resetProfileBtn?.addEventListener('click', () => {
+            clearProfileImage();
+        });
+
+        resetCoverBtn?.addEventListener('click', () => {
+            clearCoverImage();
+        });
+
+        const profilePositionKey = 'drShruthiProfilePosition';
+        const coverPositionKey = 'drShruthiCoverPosition';
+
+        let profileDragStart = { x: 0, y: 0 };
+        let profileOffset = { x: 0, y: 0 };
+        let coverDragStart = { x: 0, y: 0 };
+        let coverOffset = { x: 0, y: 0 };
+
+        const savedProfilePos = localStorage.getItem(profilePositionKey);
+        if (savedProfilePos) {
+            profileOffset = JSON.parse(savedProfilePos);
+            avatarWrap.style.backgroundPosition = `${profileOffset.x}% ${profileOffset.y}%`;
+        }
+
+        const savedCoverPos = localStorage.getItem(coverPositionKey);
+        if (savedCoverPos) {
+            coverOffset = JSON.parse(savedCoverPos);
+            coverPhoto.style.backgroundPosition = `${coverOffset.x}% ${coverOffset.y}%`;
+        }
+
+        avatarWrap?.addEventListener('mousedown', (e) => {
+            if (!avatarWrap.classList.contains('has-image')) return;
+            e.preventDefault();
+            avatarWrap.classList.add('dragging');
+            profileDragStart.x = e.clientX;
+            profileDragStart.y = e.clientY;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!avatarWrap.classList.contains('dragging')) return;
+
+            const dx = e.clientX - profileDragStart.x;
+            const dy = e.clientY - profileDragStart.y;
+
+            profileOffset.x = Math.max(-50, Math.min(50, profileOffset.x - dx / 3));
+            profileOffset.y = Math.max(-50, Math.min(50, profileOffset.y - dy / 3));
+
+            avatarWrap.style.backgroundPosition = `${profileOffset.x}% ${profileOffset.y}%`;
+            profileDragStart.x = e.clientX;
+            profileDragStart.y = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!avatarWrap.classList.contains('dragging')) return;
+            avatarWrap.classList.remove('dragging');
+            localStorage.setItem(profilePositionKey, JSON.stringify(profileOffset));
+        });
+
+        coverPhoto?.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            coverPhoto.classList.add('dragging');
+            coverDragStart.x = e.clientX;
+            coverDragStart.y = e.clientY;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!coverPhoto.classList.contains('dragging')) return;
+
+            const dx = e.clientX - coverDragStart.x;
+            const dy = e.clientY - coverDragStart.y;
+
+            coverOffset.x = Math.max(-50, Math.min(50, coverOffset.x - dx / 4));
+            coverOffset.y = Math.max(-50, Math.min(50, coverOffset.y - dy / 4));
+
+            coverPhoto.style.backgroundPosition = `${coverOffset.x}% ${coverOffset.y}%`;
+            coverDragStart.x = e.clientX;
+            coverDragStart.y = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!coverPhoto.classList.contains('dragging')) return;
+            coverPhoto.classList.remove('dragging');
+            localStorage.setItem(coverPositionKey, JSON.stringify(coverOffset));
+        });
+
+        const profileCameraBtn = document.getElementById('profileCameraBtn');
+        profileCameraBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileUploadInput?.click();
+        });
+
+        // View Mode Toggle
+        const viewModeToggle = document.getElementById('viewModeToggle');
+        const viewModeStorageKey = 'drShruthiViewMode';
+
+        const updateViewModeUI = (isViewMode) => {
+            if (isViewMode) {
+                document.body.classList.add('view-mode');
+                viewModeToggle.textContent = '✏️ Switch to Edit Mode';
+                viewModeToggle.style.background = 'rgba(10, 102, 194, 0.12)';
+                viewModeToggle.style.borderColor = 'rgba(10, 102, 194, 0.3)';
+                viewModeToggle.style.color = '#0a66c2';
+            } else {
+                document.body.classList.remove('view-mode');
+                viewModeToggle.textContent = '🔒 Switch to View Mode';
+                viewModeToggle.style.background = 'rgba(27, 107, 86, 0.1)';
+                viewModeToggle.style.borderColor = 'rgba(27, 107, 86, 0.3)';
+                viewModeToggle.style.color = 'var(--primary)';
+            }
+            localStorage.setItem(viewModeStorageKey, isViewMode ? 'true' : 'false');
+        };
+
+        const savedViewMode = localStorage.getItem(viewModeStorageKey) === 'true';
+        if (savedViewMode) {
+            updateViewModeUI(true);
+        }
+
+        viewModeToggle?.addEventListener('click', () => {
+            const isCurrentlyViewMode = document.body.classList.contains('view-mode');
+            updateViewModeUI(!isCurrentlyViewMode);
+        });
+
+        filterButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach((b) => b.classList.remove('active'));
+                button.classList.add('active');
+                const chosen = button.dataset.filter;
+
+                publications.forEach((publication) => {
+                    const visible = chosen === 'all' || publication.dataset.kind === chosen;
+                    publication.style.display = visible ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
 </body>
 </html>
